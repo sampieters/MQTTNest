@@ -1,0 +1,68 @@
+.container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black background */
+    backdrop-filter: blur(10px); /* Background blur effect */
+}
+
+.container img {
+  width: 500px;
+}
+
+
+/* Style for the field */
+.field {
+    width: 60vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(255, 255, 255, 0.9); /* Semi-transparent white background */
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); /* Shadow effect */
+}
+  
+  /* Style for the close button */
+  .close-btn {
+    position: relative;
+    background-color: transparent;
+    border: none;
+    color: #333;
+    cursor: pointer;
+  }
+  
+  /* Style for the toggle button container */
+  .toggle-btn-container {
+    text-align: center;
+    margin-top: 20px;
+  }
+  
+  /* Style for the toggle button */
+  .toggle-btn {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  /* Style for the toggle button when hovered */
+  .toggle-btn:hover {
+    background-color: #0056b3;
+  }
+  
+  /* Style for the status text */
+  .status-text {
+    text-align: center;
+    margin-top: 10px;
+  }
+  
