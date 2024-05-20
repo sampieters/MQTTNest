@@ -17,6 +17,10 @@ command to run the broker:
 
 <path_to_mosquitto> -c <path_to_mosquitto>/mosquitto.conf
 
+```
+My case: /usr/local/sbin/mosquitto -c /usr/local/etc/mosquitto/mosquitto.conf
+```
+
 ## The React Web App
 
 The web application is written in React.js. To install the needed packages run the following command:
@@ -30,3 +34,6 @@ npm start
 ## TODO:
 
 - Add docker containerization for each map 
+- Create background file (python) for processing device data and sending sometihng back
+- Add Lora to project if Wifi fails
+- Add bluetooth to add a new devices

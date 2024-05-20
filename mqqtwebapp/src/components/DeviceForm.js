@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './DeviceForm.css'
+import { GrClose } from "react-icons/gr";
 
 function DeviceForm({ onClose, onSubmit, client, device_data}) {
   const [isOn, setIsOn] = useState(false);
@@ -22,8 +23,10 @@ function DeviceForm({ onClose, onSubmit, client, device_data}) {
   return (
     <div className="container">
         <div className='field'>
-            <button className="close-btn" onClick={onClose}>Close</button>
-            <h2>{device_data.name}</h2>
+            <div className='header'>
+                <GrClose className="close-btn" onClick={onClose} />
+                <h2>{device_data.name}</h2>
+            </div>
             {device_data.type === "light" && 
             <div className="toggle-btn-container">
                 <button className="toggle-btn" onClick={handleToggle}>

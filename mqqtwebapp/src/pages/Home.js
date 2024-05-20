@@ -3,13 +3,27 @@ import NewDeviceForm from '../components/NewDeviceForm';
 import mqtt from 'mqtt';
 import './Home.css';
 import DeviceForm from '../components/DeviceForm';
+import RoomSettings from '../components/RoomSettings';
+import { SlSettings } from "react-icons/sl";
+import { FaRegLightbulb, FaCamera, FaThermometerHalf } from "react-icons/fa";
+import BluetoothScanner from '../components/BluetoothComponent';
+import BluetoothWiFiConfig from '../components/BluetoothComponent';
 
 const dictionary = {};
+
+const deviceIcons = {
+    'light': FaRegLightbulb,
+    'camera': FaCamera,
+    'temperature': FaThermometerHalf,
+};
+
 
 function Home() {
     const [messages, setMessages] = useState([]);
     const [showDiscoveryComponent, setShowDiscoveryComponent] = useState(false);
     const [showDeviceComponent, setShowDeviceComponent] = useState(false);
+    const [showRoomSettings, setShowRoomSettings] = useState(false);
+    const [currentRoom, setCurrentRoom] = useState(null);
     const [client, setClient] = useState(null); // Define client state variable
     const [devices, setDevices] = useState([]);
     const [currentDevice, setCurrentDevice] = useState(null);
@@ -66,6 +80,15 @@ function Home() {
         setCurrentDevice(null);
     }
 
+    const handleRoomSettings = (room) => {
+        setShowRoomSettings(true);
+        setCurrentRoom(room);
+    }
+
+    const handleRoomSettingsClose = () => {
+        setShowRoomSettings(false);
+    }
+
     useEffect(() => {
         const onSuccess = () => {
             console.log('MQTT client connected successfully');
@@ -100,7 +123,7 @@ function Home() {
         });
 
         mqttClient.on('message', (topic, message) => {
-            // console.log("Topic: " + topic + ", Message: " + message.toString())
+            //console.log("Topic: " + topic + ", Message: " + message.toString())
             handleMessageReceived({ topic, message: message.toString() });
 
             const status_index = topic.indexOf("status");
@@ -175,31 +198,45 @@ function Home() {
 
     // Group devices by room
     const devicesByRoom = groupByRoom();
+    console.log(devicesByRoom);
+    console.log(devicesByRoom['Kitchen'])
   
     return (
       <div className='page'>
         <h1>MQTTNest</h1>
+        <BluetoothWiFiConfig></BluetoothWiFiConfig>
+
         <div className='mainpage'>
           <div className='connected-devices'>
-            {Object.keys(devicesByRoom).map(room => (
+          {Object.keys(devicesByRoom).map(room => (
                 <div key={room}>
-                <h2>{room}</h2>
-                <ul>
-                    {devicesByRoom[room].map(device => (
-                    <li key={device.id} onClick={() => handleDeviceClick(dictionary[device.id], dictionary[device.id]?.status)}>
-                        {dictionary[device.id]?.status === "0" && <div className='unavailable'>Disconnected</div>}
-                        <img src="./logo192.png" alt="Home Automation System" />
-                        <p>{device.name} </p>
-                        {device.type === "temperature" && <p>{dictionary[device.id]?.data} °C</p>}
-                    </li>
-                    ))}
-                </ul>
+                    <div className="room">
+                        <h2>{room}</h2>
+                        <div className="settings-icon" onClick={() => handleRoomSettings(room)}>
+                            <SlSettings />
+                        </div>
+                    </div>
+                    
+                    <ul>
+                        {devicesByRoom[room].map(device => {
+                            const IconComponent = deviceIcons[device.type.toLowerCase()];
+                            return (
+                                <li key={device.id} onClick={() => handleDeviceClick(dictionary[device.id], dictionary[device.id]?.status)}>
+                                    {dictionary[device.id]?.status === "0" && <div className='unavailable'>Disconnected</div>}
+                                    {IconComponent && <IconComponent className="device-icon" />}
+                                    <p>{device.name}</p>
+                                    {device.type === "temperature" && <p>{dictionary[device.id]?.data} °C</p>}
+                                </li>
+                            );
+                        })}
+                    </ul>
                 </div>
             ))}
             </div>
         </div>
         {showDiscoveryComponent && <NewDeviceForm onClose={handleClose} onSubmit={handleSubmit} registermessage={registermessage}/>}
         {showDeviceComponent && <DeviceForm onClose={handleDeviceClose} client={client} device_data={currentDevice}/>}
+        {showRoomSettings && <RoomSettings onClose={handleRoomSettingsClose} client={client} room={currentRoom} roomDevices={devicesByRoom[currentRoom]}/>}
       </div>
     );
 }

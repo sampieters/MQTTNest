@@ -87,3 +87,24 @@ img {
     background-color: rgba(0, 0, 0, 0.8);
     color: #fff;
   }
+
+  .room {
+    display: flex;
+    align-items: center;
+}
+
+h2 {
+    margin: 0;
+    padding-right: 10px; /* Space between text and icon */
+}
+
+.settings-icon {
+    position: relative;
+}
+
+.device-icon {
+  width: 150px;
+  height: 150px;  
+  margin: 10px;
+
+}
