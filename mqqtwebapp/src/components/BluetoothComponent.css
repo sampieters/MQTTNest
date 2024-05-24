@@ -1,0 +1,60 @@
+.container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black background */
+    backdrop-filter: blur(10px); /* Background blur effect */
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(255, 255, 255, 0.9); /* Semi-transparent white background */
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); /* Shadow effect */
+}
+
+.form-group {
+    padding: 10px;
+}
+
+.form-group label {
+    padding-right: 5px;
+}
+
+.form-group input {
+    float: right;
+}
+
+.form-group select {
+    float: right;
+}
+
+.icon-container {
+    position: relative; /* Ensure the container is the reference for absolute positioning */
+    display: inline-block; /* Adjust as needed */
+    cursor: pointer; /* Optional: Makes it clear it's clickable */
+}
+
+.bluetooth-icon {
+    /* Add any desired styling for the Bluetooth icon */
+    width: 30px;
+    height: 30px;
+    margin-right: 10px;
+}
+  
+.plus-icon {
+    width: 15px;
+    height: 15px;
+    position: absolute;
+    top: 0; /* Aligns the top of the icon to the top of the container */
+    right: 0;
+}

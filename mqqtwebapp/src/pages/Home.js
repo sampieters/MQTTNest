@@ -36,8 +36,6 @@ function Home() {
         const payload = JSON.parse(message.message);
         // Check if the topic is '/discovery' and set showDiscoveryComponent accordingly
         if (message.topic === 'home/devices/register') {
-            console.log("Device that tries to register: ", payload);
-            console.log("current dictionary", dictionary);
             if (!dictionary.hasOwnProperty(payload.client_id)) {
                 setRegisterMessage(payload)
                 setShowDiscoveryComponent(true);
@@ -68,10 +66,11 @@ function Home() {
         }
     };
 
-    const handleDeviceClick = (device_id, status) => {
-        if (status === "1") {
+    const handleDeviceClick = (device) => {
+        if (device.status === "1") {
+            console.log(device);
             setShowDeviceComponent(true);
-            setCurrentDevice(device_id);
+            setCurrentDevice(device);
         }
     }
 
@@ -123,7 +122,7 @@ function Home() {
         });
 
         mqttClient.on('message', (topic, message) => {
-            //console.log("Topic: " + topic + ", Message: " + message.toString())
+            console.log("Topic: " + topic + ", Message: " + message.toString());
             handleMessageReceived({ topic, message: message.toString() });
 
             const status_index = topic.indexOf("status");
@@ -143,27 +142,30 @@ function Home() {
             }
             else if (info_index !== -1) {
                 const json_message = JSON.parse(message);
-                console.log(json_message);
                 const substring = topic.substring(info_index + 1 + "info".length);
                 const info_id = substring.trim()
                 setDevices(prevDevices => [...prevDevices, JSON.parse(message)]);
 
                 if (dictionary.hasOwnProperty(info_id)) {
+                    dictionary[json_message.id].id = json_message.id;
                     dictionary[json_message.id].name = json_message.name;
                     dictionary[json_message.id].room = json_message.room;
                     dictionary[json_message.id].type = json_message.type;
+                    dictionary[json_message.id].parameters = json_message.parameters;
                 } else {
                     dictionary[info_id] = {
+                        id: json_message.id,
                         name: json_message.name,
                         room: json_message.room,
-                        type: json_message.type
+                        type: json_message.type,
+                        parameters: json_message.parameters
                     }
                 }
             }
             else if (data_index !== -1) {
                 const substring = topic.substring(data_index + 1 + "data".length);
                 const data_id = substring.trim();
-                dictionary[data_id].data = JSON.parse(message).message.toString();
+                dictionary[data_id].data = JSON.parse(message);
             }
         });
 
@@ -198,13 +200,13 @@ function Home() {
 
     // Group devices by room
     const devicesByRoom = groupByRoom();
-    console.log(devicesByRoom);
-    console.log(devicesByRoom['Kitchen'])
   
     return (
       <div className='page'>
-        <h1>MQTTNest</h1>
-        <BluetoothWiFiConfig></BluetoothWiFiConfig>
+        <div className='header'>
+            <BluetoothWiFiConfig></BluetoothWiFiConfig>
+            <h1>MQTTNest</h1>
+        </div>
 
         <div className='mainpage'>
           <div className='connected-devices'>
@@ -221,7 +223,7 @@ function Home() {
                         {devicesByRoom[room].map(device => {
                             const IconComponent = deviceIcons[device.type.toLowerCase()];
                             return (
-                                <li key={device.id} onClick={() => handleDeviceClick(dictionary[device.id], dictionary[device.id]?.status)}>
+                                <li key={device.id} onClick={() => handleDeviceClick(dictionary[device.id])}>
                                     {dictionary[device.id]?.status === "0" && <div className='unavailable'>Disconnected</div>}
                                     {IconComponent && <IconComponent className="device-icon" />}
                                     <p>{device.name}</p>

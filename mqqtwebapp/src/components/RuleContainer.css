@@ -1,0 +1,34 @@
+.rule-container .content {
+  display: flex;
+  flex-direction: row; /* Ensure items are in a row */
+  height: 100%;
+}
+
+.rule-container .rules {
+  border-right: 2px dashed #cacaca;
+  background-color: rgba(255, 255, 255, 1);
+}
+
+.rule-container .rules, 
+.rule-container .actions {
+  flex: 1 1 auto; /* Allow the items to grow and shrink as needed */
+  min-width: 100px; /* Optional: Set a minimum width */
+  padding: 8px;
+  box-sizing: border-box;
+}
+
+.rule-container .rules div, 
+.rule-container .actions div {
+  margin: 10px;
+}
+
+.rule-container .rules input, 
+.rule-container .actions input {
+  width: 70px;
+  margin-right: 5px;
+}
+
+h3 {
+  font-size: 15px;
+  margin: 0px;
+}

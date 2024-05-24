@@ -1,37 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import './RoomSettings.css'
 import { GrClose, GrAddCircle } from "react-icons/gr";
+import Container from './RuleContainer';
 
 function RoomSettings({ onClose, onSubmit, client, room, roomDevices}) {
-      // Helper function
-      const groupDevicesByCategory = (devices) => {
-        const sensors = {
-            'temperature': true,
-            'camera': true,
-            // Add more sensor types
-        };
-
-        const actuators = {
-            'light': true,
-            // Add more actuator types
-        };
-
-        const sensorsGroup = [];
-        const actuatorsGroup = [];
-
-        devices.forEach(device => {
-            if (sensors[device.type.toLowerCase()]) {
-                sensorsGroup.push(device);
-            }
-            if (actuators[device.type.toLowerCase()]) {
-                actuatorsGroup.push(device);
-            }
-        });
-
-        return { sensorsGroup, actuatorsGroup };
-    };
-
-    const { sensorsGroup, actuatorsGroup } = groupDevicesByCategory(roomDevices);
     const [addSensor, setAddSensor] = useState(false);
     const [addActuator, setAddActuator] = useState(false);
     const [selectedSensor, setSelectedSensor] = useState('');
@@ -60,18 +32,6 @@ function RoomSettings({ onClose, onSubmit, client, room, roomDevices}) {
     }, [client]);
 
 
-    const handleToggle = () => {
-        if (client) {
-            const message = "options";
-            client.publish('home/devices/data/' + room, JSON.stringify(message), (err) => {
-                if (err) {
-                    console.error('Error publishing message: ', err);
-                } else {
-                    console.log('Message published successfully: ' + message);
-                }
-            });
-        }
-    };
 
     const handleCloseSensor = () => {
         setSelectedSensor('');
@@ -101,79 +61,40 @@ function RoomSettings({ onClose, onSubmit, client, room, roomDevices}) {
         setAddSensor(false);
     };
 
+    const [containers, setContainers] = useState([]);
+
+    const addContainer = () => {
+      const newContainer = { id: Date.now(), content: `Container ${containers.length + 1}` };
+      setContainers([...containers, newContainer]);
+    };
+  
+    const handleToggle = () => {
+      addContainer();
+    };
+
     return (
-        <div className="container">
-            <div className='field'>
-                <div className='header'>
-                    <GrClose className="close-btn" onClick={onClose} />
-                    <h2>{room}</h2>
-                </div>
-                <div className='content'>
-                    <h3>Sensors</h3>
-                    <ul>
-                        {existingSensors.map((sensor, index) => (
-                            <li key={index}>
-                                <strong>Device ID:</strong> {sensor.device_id}, <strong>Data:</strong> {sensor.data.param_name} ({sensor.data.param_value})
-                            </li>
-                        ))}
-                    </ul>
-                    {!addSensor &&
-                        <GrAddCircle onClick={() => setAddSensor(true)}/>
-                    }
-                    {addSensor && 
-                        <div>
-                            <select value={selectedSensor} onChange={(e) => setSelectedSensor(e.target.value)}>
-                                <option value="" disabled hidden>Select a sensor</option>
-                                {sensorsGroup.map(sensor => (
-                                    <option key={sensor.id} value={sensor.id}>{sensor.name}</option>
-                                ))}
-                            </select>
-                            <select value={par} onChange={(e) => setPar(e.target.value)}>
-                                <option value="" disabled hidden>Select a parameter</option>
-                                <option>temperature</option>
-                                <option>color</option>
-                                <option>options</option>
-                            </select>
-                            <input type="text" placeholder="Enter a value" value={parValue} onChange={(e) => setParValue(e.target.value)} />
-                            <button onClick={() => handleAddSensor('sensor')}>Add</button>
-                            <button onClick={() => handleCloseSensor()}>Cancel</button>
-                        </div>
-                    }
-
-                    <h3>Actuators</h3>
-                    {!addActuator &&
-                        <GrAddCircle onClick={() => setAddActuator(true)}/>
-                    }
-                    {addActuator && 
-                        <div>
-                            <select value={selectedActuator} onChange={(e) => setSelectedActuator(e.target.value)}>
-                                <option value="" disabled hidden>Select an actuator</option>
-                                {actuatorsGroup.map(actuator => (
-                                    <option key={actuator.id} value={actuator}>{actuator.name}</option>
-                                ))}
-                            </select>
-                            <select value={par} onChange={(e) => setPar(e.target.value)}>
-                                <option value="" disabled hidden>Select a parameter</option>
-                                <option>temperature</option>
-                                <option>color</option>
-                                <option>options</option>
-                            </select>
-                            <input type="text" placeholder="Enter a value" value={parValue} onChange={(e) => setParValue(e.target.value)} />
-                            <button onClick={() => handleAddSensor('actuator')}>Add</button>
-                            <button onClick={() => handleCloseSensor()}>Cancel</button>
-                        </div>
-                    }
-
-
-                    <div className="toggle-btn-container">
-                        <button className="toggle-btn" onClick={handleToggle}>
-                            Submit
-                        </button>     
-                    </div>
+        <div className='container'>
+          <div className='field'>
+            <div className='header'>
+              <GrClose className="close-btn" onClick={onClose} />
+              <h2>{room}</h2>
+            </div>
+            <div className='content'>
+              {containers.map(container => (
+                <Container className={`rule-container test`} container_id={container.id} key={container.id} client={client} room={room} devices={roomDevices}/>
+              ))}
+                <div className='new-rule-container' onClick={handleToggle}>
+                    Add a new rule set
                 </div>
             </div>
+            <div className="toggle-btn-container">
+                <button className="toggle-btn" onClick={handleToggle}>
+                  Add Container
+                </button>
+              </div>
+          </div>
         </div>
-    );
+      );
 }
 
 export default RoomSettings;
