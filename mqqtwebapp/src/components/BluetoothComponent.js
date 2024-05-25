@@ -16,19 +16,24 @@ const BluetoothScanner = ({onClose}) => {
 
   const [characteristic, setCharacteristic] = useState('');
 
+  const uuid = '19b10000-e8f2-537e-4f6c-d104768a1214';
+
   const startScan = async () => {
     try {
         const device = await navigator.bluetooth.requestDevice({
-            filters: [
-                { services: ['19b10000-e8f2-537e-4f6c-d104768a1214'] }, // Filter by service UUID
-            ]
+          filters: [
+            { services: [uuid] }, // Filter by service UUID
+          ]
+          
         });
         
+        console.log(device);
+
         // Connect to the device
         const server = await device.gatt.connect();
 
         // Get the service
-        const service = await server.getPrimaryService('19b10000-e8f2-537e-4f6c-d104768a1214');
+        const service = await server.getPrimaryService(uuid);
 
         // Get the characteristic
         setCharacteristic(await service.getCharacteristic('19b10001-e8f2-537e-4f6c-d104768a1214'));

@@ -37,7 +37,7 @@ const Container = ({ container_id, onValidationChange, room, devices, client}) =
     // Helper function
     const groupDevicesByCategory = (devices) => {
         const sensors = {
-            'temperature': true,
+            'thermometer': true,
             'camera': true,
             // Add more sensor types
         };

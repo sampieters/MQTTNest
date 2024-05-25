@@ -14,7 +14,7 @@ const dictionary = {};
 const deviceIcons = {
     'light': FaRegLightbulb,
     'camera': FaCamera,
-    'temperature': FaThermometerHalf,
+    'thermometer': FaThermometerHalf,
 };
 
 

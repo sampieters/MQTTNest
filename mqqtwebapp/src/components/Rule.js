@@ -8,47 +8,39 @@ const possible_bounds = {
 
 const initialParameters = {
   "device": "",
-  "parameters": "",
+  "parameter": "",
   "bound": "",
   "value": "",
 };
 
 const Rule = ({ onChange, index, devices, onParameterChange }) => {
   const [localParameters, setLocalParameters] = useState(initialParameters);
-  const [selectedDevice, setSelectedDevice] = useState('');
-  const [selectedParameter, setSelectedParameter] = useState('');
-  const [selectedBound, setSelectedBound] = useState('');
-  const [selectedValue, setSelectedValue] = useState('');
 
   useEffect(() => {
     onParameterChange(index, localParameters);
   }, [localParameters]);
 
   const handleParameterChange = (event) => {
-    const parameter = event.target.value;
-    setSelectedParameter(parameter);
-    handlePropParameterChange("parameter", parameter);
+    handlePropParameterChange("parameter", event.target.value);
   };
 
   const handleBoundChange = (event) => {
-    const bound = event.target.value;
-    setSelectedBound(bound);
-    handlePropParameterChange("bound", bound);
+    handlePropParameterChange("bound", event.target.value);
   };
 
   const handleValueChange = (event) => {
-    const value = event.target.value;
-    setSelectedValue(value);
-    handlePropParameterChange("value", value);
+    handlePropParameterChange("value", event.target.value);
   };
 
   const getDeviceParameters = () => {
-    const device = devices.find(device => device.id === selectedDevice);
+    const device = devices.find(device => device.id === localParameters.device);
     return device ? device.parameters : {};
   };
 
   const getParameterBounds = () => {
-    return possible_bounds[selectedParameter] || [];
+    const device = devices.find(device => device.id === localParameters.device);
+    const type = device ? device.parameters[localParameters.parameter] : '';
+    return possible_bounds[type] || [];
   };
 
   const handlePropParameterChange = (key, value) => {
@@ -58,7 +50,6 @@ const Rule = ({ onChange, index, devices, onParameterChange }) => {
 
   const handleDeviceChange = (event) => {
     const device = event.target.value;
-    setSelectedDevice(device);
     handlePropParameterChange("device", device);
   };
 
@@ -72,7 +63,7 @@ const Rule = ({ onChange, index, devices, onParameterChange }) => {
           </option>
         ))}
       </select>
-      <select value={selectedParameter} onChange={handleParameterChange}>
+      <select value={localParameters.parameter} onChange={handleParameterChange}>
         <option key={-1} value="">Select Parameter</option>
         {Object.keys(getDeviceParameters()).map((key) => (
           <option key={key} value={key}>
@@ -80,7 +71,7 @@ const Rule = ({ onChange, index, devices, onParameterChange }) => {
           </option>
         ))}
       </select>
-      <select value={selectedBound} onChange={handleBoundChange}>
+      <select value={localParameters.bound} onChange={handleBoundChange}>
         <option key={-1} value="">Select Bound</option>
         {getParameterBounds().map((bound, index) => (
           <option key={index} value={bound}>
@@ -90,7 +81,7 @@ const Rule = ({ onChange, index, devices, onParameterChange }) => {
       </select>
       <input
         type="text"
-        value={selectedValue}
+        value={localParameters.value}
         placeholder="Value"
         onChange={handleValueChange}
       />
