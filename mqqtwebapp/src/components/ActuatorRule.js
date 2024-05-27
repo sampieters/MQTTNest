@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import './Rule.css';
+import './SensorRule.css';
 
 const possible_bounds = {
   "bool": ["==", "!="],
@@ -9,11 +9,10 @@ const possible_bounds = {
 const initialParameters = {
   "device": "",
   "parameter": "",
-  "bound": "",
   "value": "",
 };
 
-const Rule = ({ onChange, index, devices, onParameterChange }) => {
+const ActuatorRule = ({ onChange, index, devices, onParameterChange }) => {
   const [localParameters, setLocalParameters] = useState(initialParameters);
 
   useEffect(() => {
@@ -23,11 +22,7 @@ const Rule = ({ onChange, index, devices, onParameterChange }) => {
   const handleParameterChange = (event) => {
     handlePropParameterChange("parameter", event.target.value);
   };
-
-  const handleBoundChange = (event) => {
-    handlePropParameterChange("bound", event.target.value);
-  };
-
+  
   const handleValueChange = (event) => {
     handlePropParameterChange("value", event.target.value);
   };
@@ -71,14 +66,6 @@ const Rule = ({ onChange, index, devices, onParameterChange }) => {
           </option>
         ))}
       </select>
-      <select value={localParameters.bound} onChange={handleBoundChange}>
-        <option key={-1} value="">Select Bound</option>
-        {getParameterBounds().map((bound, index) => (
-          <option key={index} value={bound}>
-            {bound}
-          </option>
-        ))}
-      </select>
       <input
         type="text"
         value={localParameters.value}
@@ -99,4 +86,4 @@ const Rule = ({ onChange, index, devices, onParameterChange }) => {
   );
 };
 
-export default Rule;
+export default ActuatorRule;

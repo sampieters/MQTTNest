@@ -68,7 +68,6 @@ function Home() {
 
     const handleDeviceClick = (device) => {
         if (device.status === "1") {
-            console.log(device);
             setShowDeviceComponent(true);
             setCurrentDevice(device);
         }
@@ -122,7 +121,6 @@ function Home() {
         });
 
         mqttClient.on('message', (topic, message) => {
-            console.log("Topic: " + topic + ", Message: " + message.toString());
             handleMessageReceived({ topic, message: message.toString() });
 
             const status_index = topic.indexOf("status");
@@ -144,7 +142,15 @@ function Home() {
                 const json_message = JSON.parse(message);
                 const substring = topic.substring(info_index + 1 + "info".length);
                 const info_id = substring.trim()
-                setDevices(prevDevices => [...prevDevices, JSON.parse(message)]);
+
+                // Check if device already exists
+                setDevices(prevDevices => {
+                    const deviceExists = prevDevices.some(device => device.id === json_message.id);
+                    if (!deviceExists) {
+                        return [...prevDevices, json_message];
+                    }
+                    return prevDevices;
+                });
 
                 if (dictionary.hasOwnProperty(info_id)) {
                     dictionary[json_message.id].id = json_message.id;
@@ -220,10 +226,11 @@ function Home() {
                     </div>
                     
                     <ul>
-                        {devicesByRoom[room].map(device => {
+                        {devicesByRoom[room]?.map((device, index) => {
                             const IconComponent = deviceIcons[device.type.toLowerCase()];
                             return (
-                                <li key={device.id} onClick={() => handleDeviceClick(dictionary[device.id])}>
+
+                                <li key={index} onClick={() => handleDeviceClick(dictionary[device.id])}>
                                     {dictionary[device.id]?.status === "0" && <div className='unavailable'>Disconnected</div>}
                                     {IconComponent && <IconComponent className="device-icon" />}
                                     <p>{device.name}</p>

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import './RuleContainer.css'; // Ensure you have a CSS file for Container styling
-import Rule from './Rule';
+import SensorRule from './SensorRule';
+import ActuatorRule from './ActuatorRule';
 
 const Container = ({ container_id, onValidationChange, room, devices, client}) => {
     console.log("CONTAINER_ID: ", container_id);
@@ -107,7 +108,7 @@ const Container = ({ container_id, onValidationChange, room, devices, client}) =
                     <h3>Rule(s)</h3>
                     {rules.map((rule, index) => (
                         <div key={index}>
-                            <Rule index={index} devices={sensorsGroup} onParameterChange={(index, newParameters) => handleParameterChange("sensor", index, newParameters)}></Rule>
+                            <SensorRule index={index} devices={sensorsGroup} onParameterChange={(index, newParameters) => handleParameterChange("sensor", index, newParameters)}></SensorRule>
                         </div>
                     ))}
                     <button className="toggle-btn" onClick={addRule}>
@@ -118,7 +119,7 @@ const Container = ({ container_id, onValidationChange, room, devices, client}) =
                     <h3>Action(s)</h3>
                     {actions.map((action, index) => (
                         <div key={index}>
-                            <Rule index={index} devices={actuatorsGroup} onParameterChange={(index, newParameters) => handleParameterChange("action", index, newParameters)}></Rule>
+                            <ActuatorRule index={index} devices={actuatorsGroup} onParameterChange={(index, newParameters) => handleParameterChange("action", index, newParameters)}></ActuatorRule>
                         </div>
                     ))}
                     <button className="toggle-btn" onClick={addAction}>

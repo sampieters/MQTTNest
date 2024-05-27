@@ -40,6 +40,7 @@ print("Connected to Wifi")
 print("Connecting to MQTT Client")
 client = MQTTClient("fipy", "192.168.0.226",user="", password="", port=1883)
 
+
 def sub_cb(topic, msg):
     # Convert bytes to string
     topic = topic.decode('utf-8')
@@ -52,7 +53,7 @@ def sub_cb(topic, msg):
         print("Subscribed to topic: " + 'home/' + msg['room'] + '/' + msg['id'])
         client.publish(topic=status_topic, msg="1", retain=True)
          
-        if 'parameters' in msg and not msg['parameters']:
+        if 'parameters' not in msg:
             info_message = {
                 'id': client_id,
                 'type': client_type,

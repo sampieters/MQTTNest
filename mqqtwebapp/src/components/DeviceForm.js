@@ -18,6 +18,7 @@ function DeviceForm({ onClose, onSubmit, client, device_data}) {
     }
   };
 
+
   const handleChange = (newColor, key, value) => {
     if (client) {
       const hex_str = newColor.hex.toString();
@@ -36,48 +37,43 @@ function DeviceForm({ onClose, onSubmit, client, device_data}) {
 
   const renderParameter = (key, value) => {
     if (value.toString() === 'bool') {
-        // TODO: change cur_value with the right value
-      const cur_value = device_data.data[key];
-      return (
-        <div className='param-container'>
-            <div className='param-name'>{key}</div>
-            <input type="checkbox" className="l" checked={cur_value} onClick={() => handleToggle(key, cur_value)}></input>
-        </div>
-      );
+        const cur_value = device_data.data[key];
+        return (
+            <div key={key} className='param-container'>
+                <div className='param-name'>{key}</div>
+                <input type="checkbox" className="l" checked={cur_value} onClick={() => handleToggle(key, cur_value)} />
+            </div>
+        );
     } else if (value.toString() === 'number') {
-      const cur_value = device_data.data[key];
-      return (
-        <div className='param-container'>
-            <div className='param-name'>{key}: {cur_value}</div>
-        </div>
-      );
+        const cur_value = device_data.data[key];
+        return (
+            <div key={key} className='param-container'>
+                <div className='param-name'>{key}: {cur_value}</div>
+            </div>
+        );
     } else if (value.toString() === 'string') {
-      return (
-        <input
-          key={key}
-          type="text"
-          value={value}
-          readOnly
-          onClick={() => console.log(`${key} input clicked`)}
-        />
-      );
+        return (
+            <input
+                key={key}
+                type="text"
+                value={value}
+                readOnly
+            />
+        );
     } else if (value.toString() === 'color') {
-      const cur_value = device_data.data[key];
-      const new_value = `#${cur_value.slice(2).toUpperCase()}`;
-      return (
-        <div className='param-container'>
-          <ChromePicker color={new_value} onChange={(newColor) => handleChange(newColor, key, cur_value)} />
-        </div>
-      );
-    } 
-    
-    
-    else {
-      return (
-        <div key={key} onClick={() => console.log(`${key} clicked`)}>
-          {key}: {value.toString()}
-        </div>
-      );
+        const cur_value = device_data.data[key];
+        const new_value = `#${cur_value.slice(2).toUpperCase()}`;
+        return (
+            <div key={key} className='param-container'>
+                <ChromePicker color={new_value} onChange={(newColor) => handleChange(newColor, key, cur_value)} />
+            </div>
+        );
+    } else {
+        return (
+            <div key={key}>
+                {key}: {value.toString()}
+            </div>
+        );
     }
   };
 
