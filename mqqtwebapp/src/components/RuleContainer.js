@@ -4,8 +4,6 @@ import SensorRule from './SensorRule';
 import ActuatorRule from './ActuatorRule';
 
 const Container = ({ container_id, onValidationChange, room, devices, client}) => {
-    console.log("CONTAINER_ID: ", container_id);
-
   const [subcontainers, setSubcontainers] = useState([]);
   const [rules, setRules] = useState([]);
   const [actions, setActions] = useState([]);
@@ -64,8 +62,6 @@ const Container = ({ container_id, onValidationChange, room, devices, client}) =
     };
 
     const performRuleFunction = (type, item) => {
-        console.log("YAAAAY: ", container_id, item);
-        // Add your function logic here
         const message = JSON.stringify(item);
         client.publish('home/' + room + '/rule-engine/OR_container_' + container_id + '/' + type, message, { retain: true }, (err) => {
             if (err) {

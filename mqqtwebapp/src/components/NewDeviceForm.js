@@ -3,11 +3,6 @@ import './NewDeviceForm.css'
 import { GrClose } from "react-icons/gr";
 
 
-const deviceParameters = {
-  'light': {},
-  'temperature': {'temp': 'float', 'humidity ': 'float'},
-  'camera': {'message': 'string'}
-}
 
 
 const NewDeviceForm = ({ onClose, onSubmit, registermessage }) => {
@@ -15,17 +10,13 @@ const NewDeviceForm = ({ onClose, onSubmit, registermessage }) => {
   const [type, setType] = useState(registermessage["client_type"]);
   const [name, setName] = useState('');
   const [room, setRoom] = useState('');
-  const [params, setParameters] = useState({});
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    setParameters()
-    const parameters = deviceParameters[type];
-
     // Call the onSubmit prop with the name and room values
-    console.log({ id, type, name, room, parameters });
-    onSubmit({ id, type, name, room, parameters });
+    console.log({ id, type, name, room  });
+    onSubmit({ id, type, name, room });
     // Clear input fields
     setName('');
     setRoom('');

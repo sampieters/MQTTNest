@@ -15,7 +15,6 @@ function RoomSettings({ onClose, onSubmit, client, room, roomDevices}) {
 
     useEffect(() => {
         const handleMessage = (topic, message) => {
-            console.log("YEET: Topic: " + topic + ", Message: " + JSON.stringify(message));
             if (topic.includes('sensor')) {
                 const match = topic.match(/sensor\/(.*)/);
                 const newSensor = { "device_id": match ? match[1] : '', "data": JSON.parse(message) };
@@ -45,7 +44,6 @@ function RoomSettings({ onClose, onSubmit, client, room, roomDevices}) {
             const param_name = par;
             const param_value = parValue;
             const message = {"param_name" : param_name, "param_value": param_value};
-            console.log(JSON.stringify("WHUT" + JSON.stringify(message) + " " + par + " " + parValue));
             client.publish('home/' + room + '/' + device_type + '/' + selectedSensor, JSON.stringify(message), { retain: true }, (err) => {
                 if (err) {
                     console.error('Error publishing message: ', err);

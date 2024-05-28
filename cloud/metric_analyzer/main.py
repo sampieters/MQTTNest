@@ -11,54 +11,12 @@ PORT = 1883
 TOPIC = "home/#"
 
 rules = []
-
 actions = []
 
 # devices should be kept in a json like follows
-devices = [
-    {
-        'id': 'DUMM1',
-        'name': 'alight',
-        'type': 'light',
-        'room': 'Living',
-        'status': '1',
-        'parameters': '',
-        'data': '',
-    },
-    {
-        'id': 'DUMMY2',
-        'name': 'thermometer',
-        'type': 'temperature',
-        'room': 'Kitchen',
-        'status': '1',
-        'parameters': '',
-        'data': '',
-    }
-]
+devices = []
 
 sensor_types = ['thermometer']
-
-comics = [
-  {
-    'title': 'Batman',
-    'publisher': 'DC',
-    'issue': 89,
-    'released': "idk"
-  },
-  {
-    'title': 'Flash',
-    'publisher': 'DC',
-    'issue': 753,
-    'released': "idk"
-  },
-  {
-    'title': 'Captain Marvel',
-    'publisher': 'Marvel',
-    'issue': 18,
-    'released': "idk"
-  }
-]
-
 
 # Callback when the client receives a CONNACK response from the server
 def on_connect(client, userdata, flags, rc):
@@ -101,7 +59,6 @@ def on_message(client, userdata, msg):
                 if device["type"] not in sensor_types:
                     return
         
-        # TODO: ONLY IF DEVICE IS A SENSOR OTHERWISE IT WILL KEEP LOOPING
         for index, rule in enumerate(rules):
             print(rule.filter(devices))
             

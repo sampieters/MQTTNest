@@ -6,7 +6,6 @@ import DeviceForm from '../components/DeviceForm';
 import RoomSettings from '../components/RoomSettings';
 import { SlSettings } from "react-icons/sl";
 import { FaRegLightbulb, FaCamera, FaThermometerHalf } from "react-icons/fa";
-import BluetoothScanner from '../components/BluetoothComponent';
 import BluetoothWiFiConfig from '../components/BluetoothComponent';
 
 const dictionary = {};
@@ -50,6 +49,7 @@ function Home() {
     const handleSubmit = (data) => {
         if (client) {
             const message = JSON.stringify(data); // Convert data to JSON string (or any other format)
+            console.log(message);
             
             // Publish the message to the specified topic
             // TODO: change string 'client2' to the actual client
