@@ -7,6 +7,8 @@ import cv2 as cv
 import base64
 import numpy as np
 
+# TODO: Probably does not work anymore. 
+
 
 # MQTT broker settings
 broker_address = "0.0.0.0"
