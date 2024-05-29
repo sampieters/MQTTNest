@@ -72,9 +72,9 @@ def sub_cb(topic, msg):
             client.publish(topic=sending_topic, msg=json_data, retain=True)
     if topic == sending_topic:
         print(msg['status'])
-        if msg['status'] == 0:
+        if int(msg['status']) == 0:
             pycom.rgbled(0x000000) 
-        elif msg['status'] == 1:
+        elif int(msg['status']) == 1:
             pycom.rgbled(0xFFFFFF)    # make the LED light up in white color
 
 
