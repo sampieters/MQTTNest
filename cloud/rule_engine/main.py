@@ -6,7 +6,7 @@ import re
 import json
 
 # MQTT broker settings
-BROKER = "0.0.0.0"
+BROKER = "mosquitto"
 PORT = 1883
 TOPIC = "home/#"
 
