@@ -61,9 +61,9 @@ const Container = ({ container_id, onValidationChange, room, devices, client}) =
         return { sensorsGroup, actuatorsGroup };
     };
 
-    const performRuleFunction = (type, item) => {
+    const performRuleFunction = (type, item, index) => {
         const message = JSON.stringify(item);
-        client.publish('home/' + room + '/rule-engine/OR_container_' + container_id + '/' + type, message, { retain: true }, (err) => {
+        client.publish('home/' + room + '/rule-engine/OR_' + container_id + '/' + type + '/' + index, message, { retain: true }, (err) => {
             if (err) {
                 console.error('Error publishing message: ', err);
             } else {
@@ -73,11 +73,11 @@ const Container = ({ container_id, onValidationChange, room, devices, client}) =
     };
 
     const handleSubmit = () => {
-        rules.forEach(rule => {
-            performRuleFunction("sensor", rule);
+        rules.forEach((rule, index) => {
+            performRuleFunction("sensor", rule, index);
         });
-        actions.forEach(action => {
-            performRuleFunction("action", action);
+        actions.forEach((action, index) => {
+            performRuleFunction("action", action, index);
         });
     };
 
@@ -102,14 +102,24 @@ const Container = ({ container_id, onValidationChange, room, devices, client}) =
             <div className="content">
                 <div className='rules'>
                     <h3>Rule(s)</h3>
-                    {rules.map((rule, index) => (
-                        <div key={index}>
-                            <SensorRule index={index} devices={sensorsGroup} onParameterChange={(index, newParameters) => handleParameterChange("sensor", index, newParameters)}></SensorRule>
-                        </div>
-                    ))}
-                    <button className="toggle-btn" onClick={addRule}>
-                        Add Rule
-                    </button>
+                    {!sensorsGroup || sensorsGroup.length === 0 ? (
+                        <div className="error-message">No sensors available. Please add sensors to the room to create rules.</div>
+                    ) : (
+                        <>
+                            {rules.map((rule, index) => (
+                                <div key={index}>
+                                    <SensorRule 
+                                        index={index} 
+                                        devices={sensorsGroup} 
+                                        onParameterChange={(index, newParameters) => handleParameterChange("sensor", index, newParameters)} 
+                                    />
+                                </div>
+                            ))}
+                            <button className="toggle-btn" onClick={addRule}>
+                                Add Rule
+                            </button>
+                        </>
+                    )}
                 </div>
                 <div className='actions'>
                     <h3>Action(s)</h3>
@@ -125,7 +135,7 @@ const Container = ({ container_id, onValidationChange, room, devices, client}) =
             </div>
         </div>
         <button className="toggle-btn" onClick={handleSubmit}>
-                    Add Container
+                    Submit
             </button>
     </div>
   );

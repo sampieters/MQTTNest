@@ -78,8 +78,8 @@ function RoomSettings({ onClose, onSubmit, client, room, roomDevices}) {
               <h2>{room}</h2>
             </div>
             <div className='content'>
-              {containers.map(container => (
-                <Container className={`rule-container test`} container_id={container.id} key={container.id} client={client} room={room} devices={roomDevices}/>
+              {containers.map((container, index) => (
+                <Container className={`rule-container test`} container_id={index} key={index} client={client} room={room} devices={roomDevices}/>
               ))}
                 <div className='new-rule-container' onClick={handleToggle}>
                     Add a new rule set

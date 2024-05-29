@@ -143,13 +143,16 @@ function Home() {
                 const substring = topic.substring(info_index + 1 + "info".length);
                 const info_id = substring.trim()
 
-                // Check if device already exists
                 setDevices(prevDevices => {
                     const deviceExists = prevDevices.some(device => device.id === json_message.id);
-                    if (!deviceExists) {
+                
+                    if (deviceExists) {
+                        return prevDevices.map(device =>
+                            device.id === json_message.id ? json_message : device
+                        );
+                    } else {
                         return [...prevDevices, json_message];
                     }
-                    return prevDevices;
                 });
 
                 if (dictionary.hasOwnProperty(info_id)) {
