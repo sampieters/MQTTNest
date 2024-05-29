@@ -1,8 +1,6 @@
 import pycom
 from network import WLAN
 import time
-import usocket as socket
-import ustruct as struct
 from machine import UART
 import os
 import json

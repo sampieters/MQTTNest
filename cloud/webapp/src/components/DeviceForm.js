@@ -41,7 +41,7 @@ function DeviceForm({ onClose, onSubmit, client, device_data}) {
         return (
             <div key={key} className='param-container'>
                 <div className='param-name'>{key}</div>
-                <input type="checkbox" className="l" checked={cur_value} onClick={() => handleToggle(key, cur_value)} />
+                <input type="checkbox" className="l" checked={cur_value} onChange={() => handleToggle(key, cur_value)} />
             </div>
         );
     } else if (value.toString() === 'number') {

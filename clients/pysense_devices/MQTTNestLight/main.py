@@ -32,7 +32,7 @@ os.dupterm(uart)
 # Connect to Wifi 
 print('Connecting to Wifi')
 wlan = WLAN(mode=WLAN.STA)
-wlan.connect(wifi_ssid, auth=(WLAN.WPA2, wifi_password), timeout=5000)
+wlan.connect(wifi_ssid, auth=(WLAN.WPA2, wifi_password), timeout=10000)
 
 while not wlan.isconnected():
     time.sleep_ms(500)
@@ -55,7 +55,7 @@ def sub_cb(topic, msg):
         print("Subscribed to topic: " + 'home/' + msg['room'] + '/' + msg['id'])
         client.publish(topic=status_topic, msg="1", retain=True)
          
-        if not 'parameters' not in msg:
+        if 'parameters' not in msg:
             info_message = {
                 'id': client_id,
                 'type': 'light',
