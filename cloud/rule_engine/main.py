@@ -16,7 +16,7 @@ actions = {}
 # devices should be kept in a json like follows
 devices = []
 
-sensor_types = ['thermometer']
+sensor_types = ['thermometer', 'camera']
 
 # Callback when the client receives a CONNACK response from the server
 def on_connect(client, userdata, flags, rc):
@@ -41,9 +41,14 @@ def on_message(client, userdata, msg):
     info_match = re.search(pattern, msg.topic)
     if info_match:
         result = info_match.group(1)
-        print("DEVICE:", result)
+        print("NEW DEVICE:", result)
         print("DATA: ", eval(msg.payload.decode('utf-8')))
+        for index, device in enumerate(devices):
+            if device["id"] == result:
+                devices[index] = eval(msg.payload.decode('utf-8'))
+                return
         devices.append(eval(msg.payload.decode('utf-8')))
+        print("ALL DEVICES", devices)
 
     pattern = r"data/(.*)"
     data_match = re.search(pattern, msg.topic)
@@ -54,18 +59,12 @@ def on_message(client, userdata, msg):
 
         for device in devices:
             if device["id"] == result:
-                print("SUCCEEDED")
                 device["data"] = eval(msg.payload.decode('utf-8'))
                 if device["type"] not in sensor_types:
                     return
         
-        print("DICT: ", rules)
         for key in rules:
-            print("KEY: ", key)
             for rule in rules[key]:
-                #print("RULE", rule)
-                print("CHECK:", rule.filter(devices))
-            
                 # Step 3: Use the filter method to get items that match the rule
                 matching_items = list(rule.filter(devices))
 
@@ -74,7 +73,7 @@ def on_message(client, userdata, msg):
                     print("The rule results True.")
                     for action in actions[key]:
                         the_topic = "home/devices/data/" + action["device"]
-
+                        print("TOPIC: ", the_topic)
                         for device in devices:
                             print("DEVICE HELP: ", device)
                             if device["id"] == action["device"]:
@@ -140,14 +139,5 @@ client.on_message = on_message
 print(f"Connecting to {BROKER}...")
 client.connect(BROKER, PORT)
 # Start the loop
-client.loop_start()
+client.loop_forever()
 
-try:
-    while True:
-        time.sleep(1)
-except Exception as e:
-    # Exception handling
-    print(f"An error occurred: {e}")
-finally:
-    # Stop the MQTT client
-    client.loop_stop()
