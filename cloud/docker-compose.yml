@@ -16,7 +16,7 @@ services:
       - "8080:80"
 
   rule_engine:
-    build: ./metric_analyzer
+    build: ./rule_engine
 
 volumes:
   mosquitto_data:
