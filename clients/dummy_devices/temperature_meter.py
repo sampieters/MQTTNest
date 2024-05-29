@@ -96,10 +96,9 @@ client.loop_start()
 while True:
     if subscribed:
         number = random.uniform(18.0, 40.0)
-        formatted_number = f"{number:.2f}"
 
         data_message = {
-            'temperature': formatted_number
+            'temperature': number
         }
         json_data = json.dumps(data_message)
         client.publish(sending_topic, json_data)

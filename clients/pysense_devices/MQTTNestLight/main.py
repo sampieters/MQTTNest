@@ -40,7 +40,7 @@ print(wlan.ifconfig()[:1])
 print("Connected to Wifi: ")
 
 # Connect to MQTT broker
-print("Connecting to MQTT Client")
+print("Connecting to MQTT Broker")
 client = MQTTClient(client_id, broker_address,user="", password="", port=broker_port)
 
 def sub_cb(topic, msg):

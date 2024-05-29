@@ -10,8 +10,8 @@ BROKER = "0.0.0.0"
 PORT = 1883
 TOPIC = "home/#"
 
-rules = []
-actions = []
+rules = {}
+actions = {}
 
 # devices should be kept in a json like follows
 devices = []
@@ -43,7 +43,6 @@ def on_message(client, userdata, msg):
         result = info_match.group(1)
         print("DEVICE:", result)
         print("DATA: ", eval(msg.payload.decode('utf-8')))
-
         devices.append(eval(msg.payload.decode('utf-8')))
 
     pattern = r"data/(.*)"
@@ -55,49 +54,68 @@ def on_message(client, userdata, msg):
 
         for device in devices:
             if device["id"] == result:
+                print("SUCCEEDED")
                 device["data"] = eval(msg.payload.decode('utf-8'))
                 if device["type"] not in sensor_types:
                     return
         
-        for index, rule in enumerate(rules):
-            print(rule.filter(devices))
+        print("DICT: ", rules)
+        for key in rules:
+            print("KEY: ", key)
+            for rule in rules[key]:
+                #print("RULE", rule)
+                print("CHECK:", rule.filter(devices))
             
-            # Step 3: Use the filter method to get items that match the rule
-            matching_items = list(rule.filter(devices))
+                # Step 3: Use the filter method to get items that match the rule
+                matching_items = list(rule.filter(devices))
 
-            # Step 4: Check if any items result in True
-            if matching_items:
-                print("The rule results True.")
-                the_topic = "home/devices/data/" + actions[index]["device"]
+                # Step 4: Check if any items result in True
+                if matching_items:
+                    print("The rule results True.")
+                    for action in actions[key]:
+                        the_topic = "home/devices/data/" + action["device"]
 
-                for device in devices:
-                    if device["id"] == actions[index]["device"]:
-                        print("PREVIOUS DATA", device["data"])
-                        the_parameter = actions[index]["parameter"]
-                        the_value = actions[index]["value"]
-                        the_data = device["data"]
-                        the_data[the_parameter] = the_value
-                        print("NEW DATA", the_data)
-                        client.publish(the_topic, json.dumps(the_data))
-            else:
-                print("No items matched the rule.")
+                        for device in devices:
+                            print("DEVICE HELP: ", device)
+                            if device["id"] == action["device"]:
+                                the_parameter = action["parameter"]
+                                print("PARAMETER", the_parameter)
+                                the_value = action["value"]
+                                print("VALUE: ", the_value)
+                                the_data = device["data"]
+                                print("PREVIOUS DATA", the_data)
+                                the_data[the_parameter] = the_value
+                                print("NEW DATA", the_data)
+                                client.publish(the_topic, json.dumps(the_data))
+                else:
+                    print("No items matched the rule.")
 
-    pattern = r"/sensor"
+    pattern = r'/sensor/(\d+)'
     sensor_match = re.search(pattern, msg.topic)
     if sensor_match:
-        #result = sensor_match.group(1)
         rule_dict = eval(msg.payload.decode('utf-8'))
-        rule_string = f"id == \"{rule_dict["device"]}\" and data[\"{rule_dict["parameter"]}\"] {rule_dict["bound"]} {str(rule_dict["value"])}"
+        container_id = sensor_match.group(1)
+        rule_string = f"id == \"{rule_dict['device']}\" and data[\"{rule_dict['parameter']}\"] {rule_dict['bound']} {str(rule_dict['value'])}"
         print("RULE: " + rule_string)
+        if container_id in rules:
+            rules[container_id].append(rule_engine.Rule(rule_string))
+        else: 
+            
+            rules[container_id] = [rule_engine.Rule(rule_string)]
 
-        rules.append(rule_engine.Rule(rule_string))
-
-    pattern = r"/action"
+    # Define the regex pattern to match "/action/<id>"
+    pattern = r'/action/(\d+)'
     actor_match = re.search(pattern, msg.topic)
     if actor_match:
         action_dict = eval(msg.payload.decode('utf-8'))
+        container_id = actor_match.group(1)
         print("ACTION: " + msg.payload.decode('utf-8'))
-        actions.append(action_dict)
+        #actions.append(action_dict)
+
+        if container_id in actions:
+            actions[container_id].append(action_dict)
+        else: 
+            actions[container_id] = [action_dict]
 
 # Function to attempt reconnection
 def try_reconnect(client):
@@ -126,7 +144,7 @@ client.loop_start()
 
 try:
     while True:
-        time.sleep(5)
+        time.sleep(1)
 except Exception as e:
     # Exception handling
     print(f"An error occurred: {e}")
