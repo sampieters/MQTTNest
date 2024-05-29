@@ -9,6 +9,11 @@ services:
     volumes:
       - mosquitto_data:/mosquitto/data
       - mosquitto_log:/mosquitto/log
+    healthcheck:
+      test: ["CMD-SHELL", "/usr/local/bin/check_mosquitto.sh"]
+      interval: 1s
+      timeout: 2s
+      retries: 6
 
   frontend:
     build: ./webapp
@@ -17,6 +22,9 @@ services:
 
   rule_engine:
     build: ./rule_engine
+    depends_on:
+      mosquitto:
+        condition: service_healthy
 
 volumes:
   mosquitto_data:
