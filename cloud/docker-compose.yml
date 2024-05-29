@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  mosquitto:
+    build: ./mosquitto_broker
+    ports:
+      - "1883:1883"
+      - "9001:9001"
+    volumes:
+      - mosquitto_data:/mosquitto/data
+      - mosquitto_log:/mosquitto/log
+
+  frontend:
+    build: ./webapp
+    ports:
+      - "8080:80"
+
+volumes:
+  mosquitto_data:
+  mosquitto_log:
