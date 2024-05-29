@@ -4,6 +4,8 @@ import { GrClose } from "react-icons/gr";
 import { ChromePicker } from 'react-color';
 
 function DeviceForm({ onClose, onSubmit, client, device_data}) {
+
+    console.log("YEET: ", device_data);
   const handleToggle = (key, cur_value) => {
     if (client) {
         device_data.data[key] = cur_value === 0 ? 1 : 0;
@@ -85,7 +87,7 @@ function DeviceForm({ onClose, onSubmit, client, device_data}) {
                 <h2>{device_data.name}</h2>
             </div>
             <div className='input-params'>
-                {Object.entries(device_data.parameters).map(([key, value]) => renderParameter(key, value))}
+                {device_data.parameters && Object.entries(device_data.parameters).map(([key, value]) => renderParameter(key, value))}
             </div>
         </div>
     </div>

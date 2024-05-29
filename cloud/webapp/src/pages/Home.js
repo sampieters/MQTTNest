@@ -174,7 +174,9 @@ function Home() {
             else if (data_index !== -1) {
                 const substring = topic.substring(data_index + 1 + "data".length);
                 const data_id = substring.trim();
-                dictionary[data_id].data = JSON.parse(message);
+                if (dictionary.hasOwnProperty(data_id)) {
+                    dictionary[data_id].data = JSON.parse(message);
+                }
             }
         });
 

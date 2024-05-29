@@ -38,7 +38,6 @@ mp = MPL3115A2(py,mode=PRESSURE)
 pycom.heartbeat(False)
 uart = UART(0, baudrate=115200)
 os.dupterm(uart)
-connected = False
 
 # Connect to Wifi
 print('Connecting to Wifi')
@@ -56,7 +55,6 @@ client = MQTTClient(client_id, broker_address,user="", password="", port=broker_
 
 
 def sub_cb(topic, msg):
-    global connected
     # Convert bytes to string
     topic = topic.decode('utf-8')
     # Convert bytes to dictionary
@@ -83,10 +81,9 @@ def sub_cb(topic, msg):
                     }
                 }
             json_data = json.dumps(info_message)
-            client.publish(ack_topic, json_data, True)
-            connected = True
+            client.publish(ack_topic, json_data, True,  qos=1)
 
-client.set_last_will(status_topic, msg="0", retain=True, qos=1)
+client.set_last_will(status_topic, msg="0", retain=True)
 client.set_callback(sub_cb)
 client.connect()
 
@@ -102,23 +99,22 @@ client.publish(topic=register_topic, msg=json_data)
 client.subscribe(topic=ack_topic)
 
 while True:
-    if connected:
-        pressure = round(mp.pressure(), 2)
-        light = str(lt.light())
-        temp = round(si.temperature(), 2)
-        humidity = round(si.humidity())
-        battery = round(py.read_battery_voltage(), 1)
+    pressure = round(mp.pressure(), 2)
+    light = str(lt.light())
+    temp = round(si.temperature(), 2)
+    humidity = round(si.humidity())
+    battery = round(py.read_battery_voltage(), 1)
 
-        print("Temparature: " + str(temp) + ", humidity: " + str(humidity) + ", battery: " + str(battery))
-        data = {
-            'temperature': temp,
-            'humidity': humidity,
-            'pressure': pressure,
-            'light': light,
-            'battery': battery
-        }
-        json_data = json.dumps(data)
-        client.publish(topic=sending_topic, msg=json_data)
+    print("Temparature: " + str(temp) + ", humidity: " + str(humidity) + ", battery: " + str(battery))
+    data = {
+        'temperature': temp,
+        'humidity': humidity,
+        'pressure': pressure,
+        'light': light,
+        'battery': battery
+    }
+    json_data = json.dumps(data)
+    client.publish(topic=sending_topic, msg=json_data, qos=1)
 
-        client.check_msg()
-    time.sleep(1)
+    client.check_msg()
+    time.sleep(3)
