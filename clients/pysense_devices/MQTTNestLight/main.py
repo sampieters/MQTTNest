@@ -39,7 +39,7 @@ while not wlan.isconnected():
 print(wlan.ifconfig()[:1])
 print("Connected to Wifi: ")
 
-# Connect to MQTT client
+# Connect to MQTT broker
 print("Connecting to MQTT Client")
 client = MQTTClient(client_id, broker_address,user="", password="", port=broker_port)
 

@@ -23,8 +23,7 @@ const BluetoothScanner = ({onClose}) => {
         const device = await navigator.bluetooth.requestDevice({
           filters: [
             { services: [uuid] }, // Filter by service UUID
-          ]
-          
+          ] 
         });
         
         console.log(device);
@@ -37,7 +36,6 @@ const BluetoothScanner = ({onClose}) => {
 
         // Get the characteristic
         setCharacteristic(await service.getCharacteristic('19b10001-e8f2-537e-4f6c-d104768a1214'));
-
 
       setDevices(prevDevices => [...prevDevices, device]);
       console.log('Found device:', device);
@@ -100,16 +98,12 @@ const BluetoothScanner = ({onClose}) => {
                                     ))}
                                 </select>
                             </div>
-                            {selectedSecurity === 'WPA' && (
+                            {selectedSecurity === 'WPA2' && (
                                 <div className="form-group">
                                     <label htmlFor="wifipassword">Wifi password:</label>
                                     <input type="text" id="wifipassword" value={wifiPassword} onChange={(e) => setWifiPassword(e.target.value)} required />
                                 </div>
                             )} 
-                            <div className="form-group">
-                                <label htmlFor="type">Type:</label>
-                                <input type="text" id="type" value={type} readOnly required />
-                            </div>
                             <div className="form-group">
                                 <label htmlFor="name">Name:</label>
                                 <input type="text" id="name" value={name} onChange={(e) => setName(e.target.value)} required />
