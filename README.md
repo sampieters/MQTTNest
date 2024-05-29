@@ -14,29 +14,22 @@ MQTT clients can be publishers, subscribers, or both. Publishers send messages t
 ### Topics
 Topics are hierarchical strings that define the subject or category of a message. When publishers send messages to the broker, they associate them with a specific topic. Subscribers express their interest in receiving messages by subscribing to one or more MQTT topics. The broker then routes messages to the appropriate subscribers based on their topic subscriptions.
 
-### Guide
-This broker can be run in the background.
+## Running the cloud segment
 
-#### Mac OS
-To install the mosquitto broker on mac:
+The cloud segment, consisting of the web host for the frontend and the MQTT broker can be run by running the Docker Compose v3 configuration found in the `cloud/` directory.
 
-```
-brew install mosquitto
-```
-After the installment, change the configuration file "<path_to_mosquitto>/mosquitto.conf" to the provided configuration file "mosquitto.conf". Run the following
-command to run the broker:
-```
-<path_to_mosquitto> -c <path_to_mosquitto>/mosquitto.conf
-```
-On mac it is probably the following:
-```
-My case: /usr/local/sbin/mosquitto -c /usr/local/etc/mosquitto/mosquitto.conf
-```
+### Development
 
-#### Windows
-TODO
-#### Linux
-TODO
+The docker images work with frozen filesystems and thus aren't particularly suitable for development purposes. To run the segments separately, the following commands should be run:
+
+**MQTT Broker:** (Installing mosquitto on your host system is required beforehand.)
+1. `cd cloud/mosquitto_broker`
+2. `<path_to_mosquitto_executable> -c mosquitto.conf`
+
+**React frontend:**
+1. `cd cloud/webapp`
+2. `npm i`
+3. `npm run start`
 
 ## Devices
 Devices are physical boards (arduino, ESP32, or Pysense) whose task is to simply publish sensor data (temperature, humidity, amount of people) or receive data and perform an action (switch light on/off). We call them sensors and actors correspondingly.
@@ -140,20 +133,6 @@ To run on a ESP32 device:
 - Install Arduino IDE and configure the right board (ESP32 DEV board).
 - Install the appropriate libraries.
 - Verify and upload the code to the device.
-
-## The React Web App
-The web application is written in React.js. 
-
-### Setup
-- Configure the address, username, and password of the MQTT broker in the ```Home.js``` script.
-- Install the needed packages run the following command:
-```
-npm install
-```
-After the packages are installed just run 
-```
-npm start
-```
 
 ### Operation Principles
 When the web application is started, the page consists mostly 
