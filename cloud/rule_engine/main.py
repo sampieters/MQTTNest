@@ -139,5 +139,16 @@ client.on_message = on_message
 print(f"Connecting to {BROKER}...")
 client.connect(BROKER, PORT)
 # Start the loop
-client.loop_forever()
+client.loop_start()
+
+while True:
+    try:
+        time.sleep(1)
+    except KeyboardInterrupt:
+        print("Exiting!")
+        break
+
+client.disconnect()
+
+print("Goodbye!")
 

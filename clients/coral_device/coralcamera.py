@@ -103,12 +103,15 @@ if __name__ == "__main__":
     # Set last will message.
     client.will_set(STATUS_TOPIC, payload="0", qos=2, retain=True)
     connect_mqtt()
+    client.publish(STATUS_TOPIC, "1", retain=True)
     register_device()
     client.on_message = on_message
 
     try:
         publish_occupancy()
     except KeyboardInterrupt:
+        print("Transmitting status 0.")
+        client.publish(STATUS_TOPIC, "0", retain=True)
         print("Exiting...")
         client.disconnect()
         client.loop_stop()
