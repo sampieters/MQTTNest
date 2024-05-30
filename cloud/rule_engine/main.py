@@ -99,7 +99,6 @@ def on_message(client, userdata, msg):
         if container_id in rules:
             rules[container_id].append(rule_engine.Rule(rule_string))
         else: 
-            
             rules[container_id] = [rule_engine.Rule(rule_string)]
 
     # Define the regex pattern to match "/action/<id>"
@@ -109,7 +108,6 @@ def on_message(client, userdata, msg):
         action_dict = eval(msg.payload.decode('utf-8'))
         container_id = actor_match.group(1)
         print("ACTION: " + msg.payload.decode('utf-8'))
-        #actions.append(action_dict)
 
         if container_id in actions:
             actions[container_id].append(action_dict)

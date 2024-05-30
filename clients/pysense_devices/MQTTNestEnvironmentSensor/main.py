@@ -81,7 +81,9 @@ def sub_cb(topic, msg):
                     }
                 }
             json_data = json.dumps(info_message)
-            client.publish(ack_topic, json_data, True,  qos=1)
+            client.publish(ack_topic, json_data, True)
+    else:
+        print("unknonw topic")
 
 client.set_last_will(status_topic, msg="0", retain=True)
 client.set_callback(sub_cb)
@@ -99,22 +101,26 @@ client.publish(topic=register_topic, msg=json_data)
 client.subscribe(topic=ack_topic)
 
 while True:
-    pressure = round(mp.pressure(), 2)
-    light = str(lt.light())
-    temp = round(si.temperature(), 2)
-    humidity = round(si.humidity())
-    battery = round(py.read_battery_voltage(), 1)
+    try:
+        pressure = round(mp.pressure(), 2)
+        light = str(lt.light())
+        temp = round(si.temperature(), 2)
+        humidity = round(si.humidity())
+        battery = round(py.read_battery_voltage(), 1)
 
-    print("Temparature: " + str(temp) + ", humidity: " + str(humidity) + ", battery: " + str(battery))
-    data = {
-        'temperature': temp,
-        'humidity': humidity,
-        'pressure': pressure,
-        'light': light,
-        'battery': battery
-    }
-    json_data = json.dumps(data)
-    client.publish(topic=sending_topic, msg=json_data, qos=1)
+        print("Temparature: " + str(temp) + ", humidity: " + str(humidity) + ", battery: " + str(battery))
+        data = {
+            'temperature': temp,
+            'humidity': humidity,
+            'pressure': pressure,
+            'light': light,
+            'battery': battery
+        }
+        json_data = json.dumps(data)
+        client.publish(topic=sending_topic, msg=json_data)
 
-    client.check_msg()
-    time.sleep(3)
+        client.check_msg()
+        time.sleep(3)
+    except Exception as e:
+        print("ERROR", e)
+        time.sleep(1)  # Wait a bit before retrying 
